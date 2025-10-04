@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Tests
+tests/
+coverage/
+*.test.js
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
