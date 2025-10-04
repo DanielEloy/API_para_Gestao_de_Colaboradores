@@ -1,0 +1,101 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+loglevel
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Diretório de coverage
+coverage/
+.nyc_output/
+
+# Diretório de build
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Cache
+.npm
+.eslintcache
+.node_repl_history
+
+# Arquivos de lock (escolha um - npm ou yarn)
+package-lock.json
+# yarn.lock
+
+# Arquivos de configuração específicos do ambiente
+config/local.json
+config/development.json
+config/staging.json
+
+# Arquivos de upload (se aplicável)
+uploads/
+temp-uploads/
+
+# Banco de dados local (se usar SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
+
+# Arquivos de documentação gerados
+docs/generated/
+
+# Arquivos do usuário
+*.user
+*.suo
+
+# Testes
+/test-results/
+/junit.xml
+
+# PM2
+pm2.log
+.pm2/
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Misc
+*.tgz
+*.tar.gz
