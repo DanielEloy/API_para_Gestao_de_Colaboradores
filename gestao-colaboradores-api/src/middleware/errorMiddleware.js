@@ -1,24 +1,18 @@
 const { logger } = require('../utils/logger');
 
 const errorMiddleware = {
-  // Handler para rotas não encontradas
   notFoundHandler: (req, res, next) => {
     const error = new Error(`Rota não encontrada - ${req.method} ${req.originalUrl}`);
     error.status = 404;
     
-    logger.warn(`Rota não encontrada: ${req.method} ${req.originalUrl}`, {
-      ip: req.ip,
-      userAgent: req.get('User-Agent')
-    });
+    logger.warn(`Rota não encontrada: ${req.method} ${req.originalUrl}`);
     
     next(error);
   },
 
-  // Handler global de erros
   errorHandler: (error, req, res, next) => {
     const statusCode = error.status || 500;
     
-    // Log do erro
     if (statusCode >= 500) {
       logger.error('Erro interno do servidor:', {
         message: error.message,
@@ -36,7 +30,6 @@ const errorMiddleware = {
       });
     }
 
-    // Resposta de erro
     const errorResponse = {
       success: false,
       error: error.message || 'Erro interno do servidor',
@@ -44,7 +37,6 @@ const errorMiddleware = {
       path: req.originalUrl
     };
 
-    // Inclui stack trace apenas em desenvolvimento
     if (process.env.NODE_ENV === 'development') {
       errorResponse.stack = error.stack;
     }
@@ -52,7 +44,6 @@ const errorMiddleware = {
     res.status(statusCode).json(errorResponse);
   },
 
-  // Handler para erros de sintaxe JSON
   jsonErrorHandler: (error, req, res, next) => {
     if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
       logger.warn('Erro de sintaxe JSON na requisição:', {
