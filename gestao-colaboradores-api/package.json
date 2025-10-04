@@ -2,18 +2,14 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm run test && npm run clean && echo '✅ Build concluído com sucesso!'",
-    "build:prod": "NODE_ENV=production npm run build",
-    "clean": "rm -rf coverage && echo '✅ Arquivos de cobertura removidos'",
+    "build": "npm install --production && echo '✅ Build para produção concluído!'",
+    "vercel-build": "npm install --production && echo '✅ Build Vercel concluído!'",
+    "build:dev": "npm run test && npm run clean && echo '✅ Build de desenvolvimento concluído!'",
+    "clean": "if (Test-Path coverage) { Remove-Item -Recurse -Force coverage } && echo '✅ Arquivos de cobertura removidos'",
     "test": "jest --verbose --coverage --runInBand",
     "test:watch": "jest --watch --runInBand",
     "test:basic": "jest tests/basic.test.js --verbose",
     "test:api": "jest tests/api.test.js --verbose",
-    "test:model": "jest tests/model.test.js --verbose",
-    "test:no-coverage": "jest --verbose --runInBand",
-    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --verbose",
-    "lint": "echo '🔍 Verificando qualidade do código...'",
-    "prestart": "npm run build",
-    "predeploy": "npm run build"
+    "test:model": "jest tests/model.test.js --verbose"
   }
 }
