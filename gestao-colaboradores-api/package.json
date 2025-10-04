@@ -2,8 +2,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm install --production && echo '✅ Build para produção concluído!'",
-    "vercel-build": "npm install --production && echo '✅ Build Vercel concluído!'",
+    "build": "npm install",
+    "vercel-build": "npm install",
     "build:dev": "npm run test && npm run clean && echo '✅ Build de desenvolvimento concluído!'",
     "clean": "if (Test-Path coverage) { Remove-Item -Recurse -Force coverage } && echo '✅ Arquivos de cobertura removidos'",
     "test": "jest --verbose --coverage --runInBand",
