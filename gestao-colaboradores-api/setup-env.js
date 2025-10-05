@@ -1,4 +1,6 @@
 // setup-env.js - Script para configurar ambiente
+import { logger } from "./src/utils/logger.js"
+
 const fs = require('fs');
 const readline = require('readline');
 
@@ -7,8 +9,8 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-console.log('🚀 CONFIGURAÇÃO DO AMBIENTE - API Gestão de Colaboradores');
-console.log('=========================================================\n');
+logger.info('🚀 CONFIGURAÇÃO DO AMBIENTE - API Gestão de Colaboradores');
+logger.info('=========================================================\n');
 
 const questions = [
   {
@@ -67,12 +69,12 @@ function generateEnvFile() {
 
   fs.writeFileSync('.env', envContent);
   
-  console.log('\n✅ Arquivo .env criado com sucesso!');
-  console.log('📁 Configurações salvas em: .env');
-  console.log('\n🎯 Próximos passos:');
-  console.log('1. Revise o arquivo .env');
-  console.log('2. Execute: npm run dev');
-  console.log('3. Acesse: http://localhost:' + answers.PORT + '/health');
+  logger.success('\n✅ Arquivo .env criado com sucesso!');
+  logger.info('📁 Configurações salvas em: .env');
+  logger.info('\n🎯 Próximos passos:');
+  logger.info('1. Revise o arquivo .env');
+  logger.info('2. Execute: npm run dev');
+  logger.info('3. Acesse: http://localhost:' + answers.PORT + '/health');
   
   rl.close();
 }
@@ -83,7 +85,7 @@ if (fs.existsSync('.env')) {
     if (answer.toLowerCase() === 's') {
       askQuestion(0);
     } else {
-      console.log('Operação cancelada.');
+      logger.info('Operação cancelada.');
       rl.close();
     }
   });

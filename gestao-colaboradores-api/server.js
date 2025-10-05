@@ -18,19 +18,19 @@ const PORT = process.env.PORT || 3000;
 // Detecção de ambiente
 const ambiente = process.env.NODE_ENV || 'development';
 
-console.log('🚀 ===== API GESTÃO DE COLABORADORES =====');
-console.log(`📍 Ambiente: ${ambiente}`);
-console.log(`🔢 Porta: ${PORT}`);
-console.log(`🕒 Iniciado em: ${new Date().toISOString()}`);
-console.log('==========================================');
+logger.info('🚀 ===== API GESTÃO DE COLABORADORES =====');
+logger.info(`📍 Ambiente: ${ambiente}`);
+logger.info(`🔢 Porta: ${PORT}`);
+logger.info(`🕒 Iniciado em: ${new Date().toISOString()}`);
+logger.info('==========================================');
 
 // Configurações específicas por ambiente
 if (ambiente === 'production') {
-  console.log('🔒 MODO PRODUÇÃO: Otimizações ativadas');
+  logger.info('🔒 MODO PRODUÇÃO: Otimizações ativadas');
 } else if (ambiente === 'test') {
-  console.log('🧪 MODO TESTE: Executando testes');
+  logger.info('🧪 MODO TESTE: Executando testes');
 } else {
-  console.log('💻 MODO DESENVOLVIMENTO: Logs detalhados ativos');
+  logger.info('💻 MODO DESENVOLVIMENTO: Logs detalhados ativos');
 }
 
 // Middlewares de segurança
@@ -136,10 +136,10 @@ app.use(errorMiddleware.errorHandler);
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  logger.info('Recebido SIGTERM, encerrando servidor graciosamente');
+  logger.info('Recebido SIGTERM, encerrando servidor com sucesso!');
   if (server) {
     server.close(() => {
-      console.log('Processo finalizado graciosamente');
+      logger.success('Processo finalizado com sucesso!');
       process.exit(0);
     });
   } else {
@@ -148,10 +148,10 @@ process.on('SIGTERM', () => {
 });
 
 process.on('SIGINT', () => {
-  logger.info('Recebido SIGINT, encerrando servidor graciosamente');
+  logger.info('Recebido SIGINT, encerrando servidor com sucesso!');
   if (server) {
     server.close(() => {
-      console.log('Processo finalizado graciosamente');
+      logger.success('Processo finalizado co sucesso!');
       process.exit(0);
     });
   } else {
@@ -166,10 +166,10 @@ let server;
 if (require.main === module) {
   server = app.listen(PORT, () => {
     logger.success(`🚀 Servidor rodando na porta ${PORT}`);
-    console.log(`📍 Health check: http://localhost:${PORT}/health`);
-    console.log(`📊 Status: http://localhost:${PORT}/api/status`);
-    console.log(`📚 Info: http://localhost:${PORT}/api/info`);
-    console.log(`👥 Colaboradores: http://localhost:${PORT}/api/colaboradores`);
+    logger.info(`📍 Health check: http://localhost:${PORT}/health`);
+    logger.info(`📊 Status: http://localhost:${PORT}/api/status`);
+    logger.info(`📚 Info: http://localhost:${PORT}/api/info`);
+    logger.info(`👥 Colaboradores: http://localhost:${PORT}/api/colaboradores`);
   });
 }
 

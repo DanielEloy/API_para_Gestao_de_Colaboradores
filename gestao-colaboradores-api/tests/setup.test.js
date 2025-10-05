@@ -1,4 +1,6 @@
-// tests/setup.test.js - VERSÃO FINAL CORRIGIDA
+// tests/setup.test.js
+
+import { logger } from "../src/utils/logger.js";
 
 // Mock do logger - APENAS ISSO, NADA MAIS!
 jest.mock('../src/utils/logger', () => ({
@@ -20,11 +22,11 @@ jest.mock('../src/utils/logger', () => ({
 }));
 
 beforeAll(() => {
-  console.log('🚀 Iniciando testes da API de Gestão de Colaboradores');
+  logger.info('🚀 Iniciando testes da API de Gestão de Colaboradores');
 });
 
 afterAll(() => {
-  console.log('✅ Todos os testes foram concluídos');
+  logger.success('✅ Todos os testes foram concluídos');
 });
 
 // Teste dummy para evitar erro

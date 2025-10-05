@@ -1,0 +1,97 @@
+gestao-colaboradores-api/
+├── 📄 .env-example
+├── 📄 .env.development
+├── 📄 .env.production
+├── 📄 .env.test
+├── 📄 .gitignore
+├── 📄 .vercelignore
+├── 📄 arvore_projeto.txt
+├── 📄 check-environment.js
+├── 📦 coverage
+│   ├── 📄 base.css
+│   ├── 📄 block-navigation.js
+│   ├── 📦 config
+│   │   ├── 📄 index.html
+│   │   └── 📄 index.js.html
+│   ├── 📦 controllers
+│   │   ├── 📄 colaboradoresController.js.html
+│   │   └── 📄 index.html
+│   ├── 📄 favicon.png
+│   ├── 📄 index.html
+│   ├── 📦 lcov-report
+│   │   ├── 📄 base.css
+│   │   ├── 📄 block-navigation.js
+│   │   ├── 📦 config
+│   │   │   ├── 📄 index.html
+│   │   │   └── 📄 index.js.html
+│   │   ├── 📦 controllers
+│   │   │   ├── 📄 colaboradoresController.js.html
+│   │   │   └── 📄 index.html
+│   │   ├── 📄 favicon.png
+│   │   ├── 📄 index.html
+│   │   ├── 📦 middleware
+│   │   │   ├── 📄 errorMiddleware.js.html
+│   │   │   ├── 📄 index.html
+│   │   │   ├── 📄 securityMiddleware.js.html
+│   │   │   └── 📄 validationMiddleware.js.html
+│   │   ├── 📦 models
+│   │   │   ├── 📄 Colaborador.js.html
+│   │   │   └── 📄 index.html
+│   │   ├── 📄 prettify.css
+│   │   ├── 📄 prettify.js
+│   │   ├── 📦 routes
+│   │   │   ├── 📄 colaboradores.js.html
+│   │   │   └── 📄 index.html
+│   │   ├── 📄 sort-arrow-sprite.png
+│   │   └── 📄 sorter.js
+│   ├── 📄 lcov.info
+│   ├── 📦 middleware
+│   │   ├── 📄 errorMiddleware.js.html
+│   │   ├── 📄 index.html
+│   │   ├── 📄 securityMiddleware.js.html
+│   │   └── 📄 validationMiddleware.js.html
+│   ├── 📦 models
+│   │   ├── 📄 Colaborador.js.html
+│   │   └── 📄 index.html
+│   ├── 📄 prettify.css
+│   ├── 📄 prettify.js
+│   ├── 📦 routes
+│   │   ├── 📄 colaboradores.js.html
+│   │   └── 📄 index.html
+│   ├── 📄 sort-arrow-sprite.png
+│   └── 📄 sorter.js
+├── 📄 jest.config.js
+├── 📄 package-lock.json
+├── 📄 package.json
+├── 📄 server.js
+├── 📄 setup-env.js
+├── 📦 src
+│   ├── 📦 config
+│   │   └── 📄 index.js
+│   ├── 📦 controllers
+│   │   └── 📄 colaboradoresController.js
+│   ├── 📦 doc
+│   │   └── 📄 generate-tree.js
+│   ├── 📦 middleware
+│   │   ├── 📄 errorMiddleware.js
+│   │   ├── 📄 securityMiddleware.js
+│   │   └── 📄 validationMiddleware.js
+│   ├── 📦 models
+│   │   └── 📄 Colaborador.js
+│   ├── 📦 routes
+│   │   └── 📄 colaboradores.js
+│   ├── 📄 src__projeto.txt
+│   └── 📦 utils
+│       └── 📄 logger.js
+├── 📦 tests
+│   ├── 📄 api.test.js
+│   ├── 📄 basic.test.js
+│   ├── 📄 colaboradores.test.js
+│   ├── 📄 debug-api.js
+│   ├── 📄 model.test.js
+│   ├── 📄 setup.test.js
+│   ├── 📄 simple-api.test.js
+│   ├── 📄 test-api.js
+│   ├── 📄 test-vercel.js
+│   └── 📄 test_projeto.txt
+└── 📄 vercel.json
