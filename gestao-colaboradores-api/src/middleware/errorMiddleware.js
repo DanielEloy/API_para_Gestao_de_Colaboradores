@@ -1,65 +1,54 @@
-const { logger } = require('../utils/logger');
+import { logger } from "../utils/logger.js";
 
-const errorMiddleware = {
-  notFoundHandler: (req, res, next) => {
-    const error = new Error(`Rota não encontrada - ${req.method} ${req.originalUrl}`);
-    error.status = 404;
-    
-    logger.warn(`Rota não encontrada: ${req.method} ${req.originalUrl}`);
-    
-    next(error);
-  },
-
-  errorHandler: (error, req, res, next) => {
-    const statusCode = error.status || 500;
-    
-    if (statusCode >= 500) {
-      logger.error('Erro interno do servidor:', {
-        message: error.message,
-        stack: error.stack,
-        url: req.originalUrl,
-        method: req.method,
-        ip: req.ip
-      });
-    } else {
-      logger.warn('Erro do cliente:', {
-        message: error.message,
-        status: statusCode,
-        url: req.originalUrl,
-        method: req.method
-      });
-    }
-
-    const errorResponse = {
-      success: false,
-      error: error.message || 'Erro interno do servidor',
-      timestamp: new Date().toISOString(),
-      path: req.originalUrl
-    };
-
-    if (process.env.NODE_ENV === 'development') {
-      errorResponse.stack = error.stack;
-    }
-
-    res.status(statusCode).json(errorResponse);
-  },
-
-  jsonErrorHandler: (error, req, res, next) => {
-    if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
-      logger.warn('Erro de sintaxe JSON na requisição:', {
-        error: error.message,
-        url: req.originalUrl
-      });
-      
-      return res.status(400).json({
-        success: false,
-        error: 'JSON malformado',
-        message: 'O corpo da requisição contém JSON malformado'
-      });
-    }
-    
-    next(error);
-  }
+const notFoundHandler = (req, res) => {
+  logger.warn(`Rota não encontrada: ${req.method} ${req.originalUrl}`);
+  
+  res.status(404).json({
+    success: false,
+    error: `Rota não encontrada - ${req.method} ${req.originalUrl}`,
+    timestamp: new Date().toISOString(),
+    availableEndpoints: [
+      "GET /",
+      "GET /health",
+      "GET /api/status", 
+      "GET /api/info",
+      "GET /api/colaboradores",
+      "POST /api/colaboradores"
+    ]
+  });
 };
 
-module.exports = errorMiddleware;
+const errorHandler = (error, req, res, next) => {
+  logger.error("Erro interno do servidor:", {
+    message: error.message,
+    stack: error.stack,
+    url: req.originalUrl,
+    method: req.method,
+    ip: req.ip
+  });
+
+  res.status(500).json({
+    success: false,
+    error: "Erro interno do servidor",
+    timestamp: new Date().toISOString()
+  });
+};
+
+const jsonErrorHandler = (error, req, res, next) => {
+  if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
+    logger.warn("JSON malformado na requisição:", {
+      url: req.originalUrl,
+      error: error.message
+    });
+    
+    return res.status(400).json({
+      success: false,
+      error: "JSON malformado",
+      message: "O corpo da requisição contém JSON malformado",
+      timestamp: new Date().toISOString()
+    });
+  }
+  next(error);
+};
+
+export { notFoundHandler, errorHandler, jsonErrorHandler };

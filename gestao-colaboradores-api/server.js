@@ -1,52 +1,44 @@
-// server.js - API para Gestão de Colaboradores
+// server.js - API para Gestão de Colaboradores (COM LOGGER PERSONALIZADO)
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 
-require("dotenv").config(); // Carrega variáveis do .env logo no início
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const { logger } = require("./src/utils/logger");
+// Import middlewares
+import { validateColaborador, validateId } from "./src/middleware/validationMiddleware.js";
+import { securityHeaders, rateLimiter, sanitizeInput } from "./src/middleware/securityMiddleware.js";
+import { notFoundHandler, errorHandler, jsonErrorHandler } from "./src/middleware/errorMiddleware.js";
 
-// Importa middlewares
-const validationMiddleware = require("./src/middleware/validationMiddleware.js");
-const securityMiddleware = require("./src/middleware/securityMiddleware.js");
-const errorMiddleware = require("./src/middleware/errorMiddleware.js");
+// Import routes
+import colaboradoresRoutes from "./src/routes/colaboradores.js";
 
-// Importa rotas
-const colaboradoresRoutes = require("./src/routes/colaboradores.js");
+// Import utils
+import { logger } from "./src/utils/logger.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Detecção de ambiente
 const ambiente = process.env.NODE_ENV || "development";
 
-// ===== LOG INICIAL =====
+// Log inicial com logger personalizado
 logger.info("🚀 ===== API GESTÃO DE COLABORADORES =====");
 logger.info(`📍 Ambiente: ${ambiente}`);
 logger.info(`🔢 Porta: ${PORT}`);
 logger.info(`🕒 Iniciado em: ${new Date().toISOString()}`);
 logger.info("==========================================");
 
-// Configurações específicas de ambiente
-switch (ambiente) {
-  case "production":
-    logger.info("🔒 MODO PRODUÇÃO: Otimizações ativadas");
-    break;
-  case "test":
-    logger.info("🧪 MODO TESTE: Executando testes");
-    break;
-  default:
-    logger.info("💻 MODO DESENVOLVIMENTO: Logs detalhados ativos");
-    break;
+// Configurações específicas por ambiente
+if (ambiente === "production") {
+  logger.info("🔒 MODO PRODUÇÃO: Otimizações ativadas");
+} else if (ambiente === "test") {
+  logger.info("🧪 MODO TESTE: Executando testes");
+} else {
+  logger.info("💻 MODO DESENVOLVIMENTO: Logs detalhados ativos");
 }
 
-// ===== MIDDLEWARES =====
-
-// Segurança
+// Middlewares de segurança
 app.use(helmet());
-if (securityMiddleware?.securityHeaders) app.use(securityMiddleware.securityHeaders);
-if (securityMiddleware?.rateLimiter) app.use(securityMiddleware.rateLimiter());
-if (securityMiddleware?.sanitizeInput) app.use(securityMiddleware.sanitizeInput);
-
-// CORS
+app.use(securityHeaders);
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",
@@ -54,12 +46,14 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.use(rateLimiter());
+app.use(sanitizeInput);
 
-// Parsing
+// Middlewares de parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ===== LOGGER DE REQUISIÇÕES =====
+// Middleware de logging personalizado
 app.use((req, res, next) => {
   const start = Date.now();
 
@@ -74,39 +68,49 @@ app.use((req, res, next) => {
       userAgent: req.get("User-Agent"),
     };
 
-    if (res.statusCode >= 400) {
-      logger.warn("⚠️ Requisição com erro:", logData);
+    if (res.statusCode >= 500) {
+      logger.error("Erro no servidor:", logData);
+    } else if (res.statusCode >= 400) {
+      logger.warn("Requisição com erro do cliente:", logData);
+    } else if (res.statusCode >= 300) {
+      logger.info("Redirecionamento:", logData);
     } else {
-      logger.success("✅ Requisição processada com sucesso:", logData);
+      logger.success("Requisição processada com sucesso:", logData);
     }
   });
 
   next();
 });
 
-// ===== ROTAS PRINCIPAIS =====
+// ===== ROTAS DA API =====
+
+// Rota raiz
 app.get("/", (req, res) => {
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
+  logger.debug("Acessando rota raiz");
+  
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  
   res.json({
     success: true,
     message: "🚀 API de Gestão de Colaboradores - Online!",
     timestamp: new Date().toISOString(),
     version: "1.0.0",
-    baseUrl,
+    baseUrl: baseUrl,
     endpoints: {
-      health: `${baseUrl}/health`,
-      status: `${baseUrl}/api/status`,
-      info: `${baseUrl}/api/info`,
-      colaboradores: `${baseUrl}/api/colaboradores`,
+      health: "/health",
+      status: "/api/status",
+      info: "/api/info",
+      colaboradores: "/api/colaboradores"
     },
-    documentation: "https://github.com/DanielEloy/API_para_Gestao_de_Colaboradores",
     environment: ambiente,
-    uptime: `${process.uptime().toFixed(2)}s`,
+    uptime: `${process.uptime().toFixed(2)}s`
   });
 });
 
-// ===== HEALTH CHECK =====
+// Health check
 app.get("/health", (req, res) => {
+  logger.debug("Health check executado");
+  
   const healthCheck = {
     status: "OK",
     timestamp: new Date().toISOString(),
@@ -116,14 +120,15 @@ app.get("/health", (req, res) => {
     version: "1.0.0",
   };
 
-  logger.debug("🩺 Health check executado");
   res.status(200).json(healthCheck);
 });
 
-// ===== STATUS E INFO =====
+// Status do ambiente
 app.get("/api/status", (req, res) => {
+  logger.debug("Acessando status da API");
+  
   res.json({
-    ambiente,
+    ambiente: ambiente,
     timestamp: new Date().toISOString(),
     nodeVersion: process.version,
     plataforma: process.platform,
@@ -134,7 +139,10 @@ app.get("/api/status", (req, res) => {
   });
 });
 
+// Info da API
 app.get("/api/info", (req, res) => {
+  logger.debug("Acessando informações da API");
+  
   res.json({
     name: "API Gestão de Colaboradores",
     version: "1.0.0",
@@ -142,54 +150,47 @@ app.get("/api/info", (req, res) => {
     environment: ambiente,
     endpoints: {
       root: "/",
-      colaboradores: "/api/colaboradores",
       health: "/health",
       status: "/api/status",
       info: "/api/info",
-    },
-    contact: {
-      name: "Equipe de Desenvolvimento",
-      email: "suporte@empresa.com",
-    },
+      colaboradores: "/api/colaboradores"
+    }
   });
 });
 
-// ===== ROTAS DE COLABORADORES =====
+// Routes
 app.use("/api/colaboradores", colaboradoresRoutes);
 
-// ===== TRATAMENTO DE ERROS =====
-app.use(errorMiddleware.notFoundHandler);
-app.use(errorMiddleware.jsonErrorHandler);
-app.use(errorMiddleware.errorHandler);
+// Middleware de rotas não encontradas
+app.use(notFoundHandler);
 
-// ===== FINALIZAÇÃO SEGURA =====
-let server;
+// Middleware de erro JSON
+app.use(jsonErrorHandler);
 
-function shutdownHandler(signal) {
-  logger.info(`🛑 Recebido ${signal}, encerrando servidor...`);
-  if (server) {
-    server.close(() => {
-      logger.success("✅ Servidor encerrado com sucesso!");
-      process.exit(0);
-    });
-  } else {
-    process.exit(0);
-  }
-}
+// Middleware global de erro
+app.use(errorHandler);
 
-process.on("SIGTERM", () => shutdownHandler("SIGTERM"));
-process.on("SIGINT", () => shutdownHandler("SIGINT"));
+// Graceful shutdown
+process.on("SIGTERM", () => {
+  logger.info("Recebido SIGTERM, encerrando servidor com sucesso!");
+  process.exit(0);
+});
 
-// ===== INICIALIZAÇÃO =====
-if (require.main === module) {
-  server = app.listen(PORT, () => {
-    logger.success(`🚀 Servidor rodando na porta ${PORT}`);
-    logger.info(`📍 Health: http://localhost:${PORT}/health`);
-    logger.info(`📊 Status: http://localhost:${PORT}/api/status`);
-    logger.info(`📚 Info: http://localhost:${PORT}/api/info`);
-    logger.info(`👥 Colaboradores: http://localhost:${PORT}/api/colaboradores`);
-    logger.info(`🌐 Rota raiz: http://localhost:${PORT}/`);
-  });
-}
+process.on("SIGINT", () => {
+  logger.info("Recebido SIGINT, encerrando servidor com sucesso!");
+  process.exit(0);
+});
 
-module.exports = app;
+// Eventos de processo para logging
+process.on("uncaughtException", (error) => {
+  logger.error("Exceção não capturada:", error);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Rejeição não tratada em:", promise, "razão:", reason);
+  process.exit(1);
+});
+
+// Export para Vercel
+export default app;

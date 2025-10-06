@@ -1,4 +1,4 @@
-// Logger customizado com níveis de log e cores no terminal
+// src/utils/logger.js - ES Modules Version
 const LogLevel = {
   DEBUG: 0,
   INFO: 1,
@@ -112,5 +112,5 @@ class Logger {
 // Instância única do logger
 const logger = new Logger();
 
-// Exportação CommonJS (CORRIGIDA)
-module.exports = { logger, LogLevel };
+// ✅ Exportação ES Modules (CORRIGIDA)
+export { logger, LogLevel };

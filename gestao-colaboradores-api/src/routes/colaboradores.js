@@ -1,15 +1,24 @@
-const express = require('express');
+// src/routes/colaboradores.js - CORRIGIDO
+import express from "express";
+import { 
+  listarTodos, 
+  buscarPorId, 
+  criar, 
+  atualizar,  // ✅ Nome correto
+  excluir, 
+  buscarPorDepartamento 
+} from "../controllers/colaboradoresController.js";
+
 const router = express.Router();
-const colaboradoresController = require('../controllers/colaboradoresController');
 
 // Rotas CRUD
-router.get('/', colaboradoresController.listarTodos);
-router.get('/:id', colaboradoresController.buscarPorId);
-router.post('/', colaboradoresController.criar);
-router.put('/:id', colaboradoresController.atualizar);
-router.delete('/:id', colaboradoresController.excluir);
+router.get("/", listarTodos);
+router.get("/:id", buscarPorId);
+router.post("/", criar);
+router.put("/:id", atualizar); 
+router.delete("/:id", excluir);
 
 // Rota customizada
-router.get('/departamento/:departamento', colaboradoresController.buscarPorDepartamento);
+router.get("/departamento/:departamento", buscarPorDepartamento);
 
-module.exports = router;
+export default router;
