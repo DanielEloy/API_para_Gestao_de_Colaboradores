@@ -2,6 +2,7 @@
   "name": "gestao-colaboradores-api",
   "version": "1.0.0",
   "description": "API para gestão de colaboradores",
+  "type": "module",
   "main": "server.js",
   "engines": {
     "node": "22.x"
