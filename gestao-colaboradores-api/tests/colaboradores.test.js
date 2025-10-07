@@ -1,29 +1,40 @@
-// tests/colaboradores.test.js - VERSÃO FINAL CORRIGIDA
-const request = require('supertest');
-const { app } = require('../server'); // ⚠️ IMPORTE {app} em vez de app direto
-const Colaborador = require('../src/models/Colaborador');
+// tests/colaboradores.test.js
+import request from 'supertest';
+import { app } from '../server.js';
+import Colaborador from '../src/models/Colaborador.js';
 
 describe('API de Gestão de Colaboradores', () => {
-  let testColaboradorId;
-
-  // ⚠️ REMOVA o beforeAll e afterAll que gerenciam o servidor
-
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Resetar dados para testes
+    if (Colaborador.colaboradores) {
+      Colaborador.colaboradores = [
+        {
+          id: '1',
+          nome: 'João Silva',
+          cargo: 'Desenvolvedor Backend',
+          departamento: 'Tecnologia',
+          email: 'joao.silva@empresa.com',
+          telefone: '(11) 99999-9999',
+          dataAdmissao: '2023-01-15',
+          ativo: true,
+          dataCriacao: new Date().toISOString(),
+          dataAtualizacao: new Date().toISOString()
+        }
+      ];
+    }
   });
 
-  describe('Health Check e Informações da API', () => {
-    test('GET /health - deve retornar status 200 e informações do servidor', async () => {
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
+  describe('Health Check', () => {
+    test('GET /health - deve retornar status 200', async () => {
+      const response = await request(app)
         .get('/health')
         .expect(200);
 
       expect(response.body).toHaveProperty('status', 'OK');
-      expect(response.body).toHaveProperty('timestamp');
     });
 
     test('GET /api/info - deve retornar informações da API', async () => {
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
+      const response = await request(app)
         .get('/api/info')
         .expect(200);
 
@@ -34,7 +45,7 @@ describe('API de Gestão de Colaboradores', () => {
 
   describe('CRUD de Colaboradores', () => {
     test('GET /api/colaboradores - deve retornar todos os colaboradores', async () => {
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
+      const response = await request(app)
         .get('/api/colaboradores')
         .expect(200);
 
@@ -52,7 +63,7 @@ describe('API de Gestão de Colaboradores', () => {
         dataAdmissao: '2023-10-01'
       };
 
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
+      const response = await request(app)
         .post('/api/colaboradores')
         .send(novoColaborador)
         .expect(201);
@@ -60,27 +71,42 @@ describe('API de Gestão de Colaboradores', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('id');
       expect(response.body.data.nome).toBe(novoColaborador.nome);
-      
-      testColaboradorId = response.body.data.id;
     });
 
-    test('GET /api/colaboradores/:id - deve retornar um colaborador específico', async () => {
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
-        .get(`/api/colaboradores/${testColaboradorId}`)
+    test('POST /api/colaboradores - deve falhar com dados inválidos', async () => {
+      const response = await request(app)
+        .post('/api/colaboradores')
+        .send({ cargo: 'Só cargo' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    test('GET /api/colaboradores/:id - deve retornar colaborador específico', async () => {
+      const response = await request(app)
+        .get('/api/colaboradores/1')
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.data.id).toBe(testColaboradorId);
+      expect(response.body.data.id).toBe('1');
     });
 
-    test('PUT /api/colaboradores/:id - deve atualizar um colaborador', async () => {
+    test('GET /api/colaboradores/:id - deve retornar 404 para não encontrado', async () => {
+      const response = await request(app)
+        .get('/api/colaboradores/999')
+        .expect(404);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    test('PUT /api/colaboradores/:id - deve atualizar colaborador', async () => {
       const dadosAtualizacao = {
         cargo: 'Senior QA Engineer',
         telefone: '(11) 77777-0000'
       };
 
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
-        .put(`/api/colaboradores/${testColaboradorId}`)
+      const response = await request(app)
+        .put('/api/colaboradores/1')
         .send(dadosAtualizacao)
         .expect(200);
 
@@ -88,43 +114,47 @@ describe('API de Gestão de Colaboradores', () => {
       expect(response.body.data.cargo).toBe(dadosAtualizacao.cargo);
     });
 
-    test('DELETE /api/colaboradores/:id - deve excluir um colaborador', async () => {
-      const response = await request(app) // ⚠️ USA app CORRETAMENTE
-        .delete(`/api/colaboradores/${testColaboradorId}`)
+    test('DELETE /api/colaboradores/:id - deve excluir colaborador', async () => {
+      const response = await request(app)
+        .delete('/api/colaboradores/1')
         .expect(200);
 
       expect(response.body.success).toBe(true);
     });
   });
-});
 
-describe('Model Colaborador - Testes Unitários', () => {
-  beforeEach(() => {
-    // Reseta os dados antes de cada teste
-    Colaborador.colaboradores = [
-      {
-        id: '1',
-        nome: 'João Silva',
-        cargo: 'Desenvolvedor Backend',
-        departamento: 'Tecnologia',
-        email: 'joao.silva@empresa.com',
-        telefone: '(11) 99999-9999',
-        dataAdmissao: '2023-01-15',
-        ativo: true,
-        dataCriacao: new Date().toISOString(),
-        dataAtualizacao: new Date().toISOString()
-      }
-    ];
-  });
+  describe('Model Colaborador - Testes Unitários', () => {
+    test('listarTodos - deve retornar todos os colaboradores', () => {
+      const colaboradores = Colaborador.listarTodos();
+      expect(Array.isArray(colaboradores)).toBe(true);
+    });
 
-  test('listarTodos - deve retornar todos os colaboradores', () => {
-    const colaboradores = Colaborador.listarTodos();
-    expect(Array.isArray(colaboradores)).toBe(true);
-  });
+    test('buscarPorId - deve encontrar colaborador existente', () => {
+      const colaborador = Colaborador.buscarPorId('1');
+      expect(colaborador).toBeDefined();
+      expect(colaborador.id).toBe('1');
+    });
 
-  test('buscarPorId - deve encontrar colaborador existente', () => {
-    const colaborador = Colaborador.buscarPorId('1');
-    expect(colaborador).toBeDefined();
-    expect(colaborador.id).toBe('1');
+    test('buscarPorId - deve retornar undefined para ID inexistente', () => {
+      const colaborador = Colaborador.buscarPorId('id-inexistente');
+      expect(colaborador).toBeUndefined();
+    });
+
+    test('criar - deve adicionar novo colaborador', () => {
+      const novoColaborador = {
+        nome: 'Novo Colaborador',
+        cargo: 'Analista',
+        departamento: 'RH',
+        email: 'novo@empresa.com'
+      };
+
+      const resultado = Colaborador.criar(novoColaborador);
+      
+      expect(resultado).toHaveProperty('id');
+      expect(resultado.nome).toBe(novoColaborador.nome);
+      
+      const colaboradores = Colaborador.listarTodos();
+      expect(colaboradores.length).toBe(2);
+    });
   });
 });

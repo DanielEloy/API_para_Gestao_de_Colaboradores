@@ -87,9 +87,9 @@ app.use((req, res, next) => {
 // Rota raiz
 app.get("/", (req, res) => {
   logger.debug("Acessando rota raiz");
-  
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
-  
+
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+
   res.json({
     success: true,
     message: "🚀 API de Gestão de Colaboradores - Online!",
@@ -100,17 +100,17 @@ app.get("/", (req, res) => {
       health: "/health",
       status: "/api/status",
       info: "/api/info",
-      colaboradores: "/api/colaboradores"
+      colaboradores: "/api/colaboradores",
     },
     environment: ambiente,
-    uptime: `${process.uptime().toFixed(2)}s`
+    uptime: `${process.uptime().toFixed(2)}s`,
   });
 });
 
 // Health check
 app.get("/health", (req, res) => {
   logger.debug("Health check executado");
-  
+
   const healthCheck = {
     status: "OK",
     timestamp: new Date().toISOString(),
@@ -126,7 +126,7 @@ app.get("/health", (req, res) => {
 // Status do ambiente
 app.get("/api/status", (req, res) => {
   logger.debug("Acessando status da API");
-  
+
   res.json({
     ambiente: ambiente,
     timestamp: new Date().toISOString(),
@@ -142,7 +142,7 @@ app.get("/api/status", (req, res) => {
 // Info da API
 app.get("/api/info", (req, res) => {
   logger.debug("Acessando informações da API");
-  
+
   res.json({
     name: "API Gestão de Colaboradores",
     version: "1.0.0",
@@ -153,12 +153,12 @@ app.get("/api/info", (req, res) => {
       health: "/health",
       status: "/api/status",
       info: "/api/info",
-      colaboradores: "/api/colaboradores"
-    }
+      colaboradores: "/api/colaboradores",
+    },
   });
 });
 
-// Routes
+// Rotas de colaboradores
 app.use("/api/colaboradores", colaboradoresRoutes);
 
 // Middleware de rotas não encontradas
@@ -177,7 +177,7 @@ process.on("SIGTERM", () => {
 });
 
 process.on("SIGINT", () => {
-  logger.info("Recebido SIGINT, encerrando servidor com sucesso!");
+  logger.success("Recebido SIGINT, encerrando servidor com sucesso!");
   process.exit(0);
 });
 
@@ -192,5 +192,19 @@ process.on("unhandledRejection", (reason, promise) => {
   process.exit(1);
 });
 
-// Export para Vercel
-export default app;
+// ===== INICIALIZAÇÃO DO SERVIDOR =====
+let server;
+
+// Inicia o servidor apenas se não estiver em modo teste
+if (process.env.NODE_ENV !== "test") {
+  server = app.listen(PORT, () => {
+    logger.success(`🚀 Servidor rodando na porta ${PORT}`);
+    logger.info(`📍 Health check: http://localhost:${PORT}/health`);
+    logger.info(`📊 Status: http://localhost:${PORT}/api/status`);
+    logger.info(`📚 Info: http://localhost:${PORT}/api/info`);
+    logger.info(`👥 Colaboradores: http://localhost:${PORT}/api/colaboradores`);
+  });
+}
+
+// Export para Vercel e testes
+export { app };

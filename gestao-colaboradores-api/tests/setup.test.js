@@ -1,35 +1,40 @@
 // tests/setup.test.js
+import { jest } from '@jest/globals';
 
-import { logger } from "../src/utils/logger.js";
-
-// Mock do logger - APENAS ISSO, NADA MAIS!
-jest.mock('../src/utils/logger', () => ({
+// ⚠️ Mock do logger deve vir antes do import real
+jest.unstable_mockModule('../src/utils/logger.js', () => ({
   logger: {
     info: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
     debug: jest.fn(),
-    success: jest.fn()
+    success: jest.fn(),
   },
-  LogLevel: {
-    DEBUG: 0,
-    INFO: 1,
-    WARN: 2,
-    ERROR: 3,
-    NONE: 4,
-    SUCCESS: 5
-  }
 }));
 
+// Agora importa o logger (mock aplicado)
+const { logger } = await import('../src/utils/logger.js');
+
+// Configuração global
 beforeAll(() => {
   logger.info('🚀 Iniciando testes da API de Gestão de Colaboradores');
+   // Silenciar logs no modo teste
+  console.log = jest.fn();
+  console.info = jest.fn();
+  console.warn = jest.fn();
+  console.error = jest.fn();
+  console.debug = jest.fn();
+  process.env.NODE_ENV = 'test';
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
 });
 
 afterAll(() => {
   logger.success('✅ Todos os testes foram concluídos');
 });
 
-// Teste dummy para evitar erro
 test('Setup - Configuração do ambiente de teste', () => {
-  expect(true).toBe(true);
+  expect(process.env.NODE_ENV).toBe('test');
 });

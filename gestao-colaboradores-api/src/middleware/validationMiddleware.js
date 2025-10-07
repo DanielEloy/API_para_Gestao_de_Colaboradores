@@ -1,3 +1,5 @@
+import { logger } from "../utils/logger.js";
+
 const validateColaborador = (req, res, next) => {
   const { nome, cargo, departamento, email } = req.body;
   
@@ -20,13 +22,16 @@ const validateColaborador = (req, res, next) => {
   }
 
   if (errors.length > 0) {
+    logger.warn('Validação falhou:', { errors, body: req.body });
     return res.status(400).json({
       success: false,
       error: 'Dados de entrada inválidos',
-      details: errors
+      details: errors,
+      timestamp: new Date().toISOString()
     });
   }
 
+  logger.debug('Validação passou para colaborador:', { nome, email });
   next();
 };
 
@@ -34,9 +39,11 @@ const validateId = (req, res, next) => {
   const { id } = req.params;
   
   if (!id || id.trim().length === 0) {
+    logger.warn('ID inválido na requisição:', { url: req.originalUrl });
     return res.status(400).json({
       success: false,
-      error: 'ID é obrigatório'
+      error: 'ID é obrigatório',
+      timestamp: new Date().toISOString()
     });
   }
 

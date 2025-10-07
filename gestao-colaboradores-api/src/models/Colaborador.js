@@ -1,33 +1,26 @@
 // src/models/Colaborador.js
 import { v4 as uuidv4 } from "uuid";
 
-// Array inicial de colaboradores
-let colaboradores = [
-  {
-    id: '1',
-    nome: 'João Silva',
-    cargo: 'Desenvolvedor Backend',
-    departamento: 'Tecnologia',
-    email: 'joao.silva@empresa.com',
-    telefone: '(11) 99999-9999',
-    dataAdmissao: '2023-01-15',
-    ativo: true,
-    dataCriacao: new Date().toISOString(),
-    dataAtualizacao: new Date().toISOString()
-  },
-  {
-    id: '2', 
-    nome: 'Maria Santos',
-    cargo: 'Desenvolvedor Frontend',
-    departamento: 'Tecnologia',
-    email: 'maria.santos@empresa.com',
-    telefone: '(11) 88888-8888',
-    dataAdmissao: '2023-03-20',
-    ativo: true,
-    dataCriacao: new Date().toISOString(),
-    dataAtualizacao: new Date().toISOString()
-  }
-];
+// Função que retorna o estado inicial do array de colaboradores
+function estadoInicial() {
+  return [
+    {
+      id: '1',
+      nome: 'João Silva',
+      cargo: 'Desenvolvedor Backend',
+      departamento: 'Tecnologia',
+      email: 'joao.silva@empresa.com',
+      telefone: '(11) 99999-9999',
+      dataAdmissao: '2023-01-15',
+      ativo: true,
+      dataCriacao: new Date().toISOString(),
+      dataAtualizacao: new Date().toISOString()
+    }
+  ];
+}
+
+// Array de colaboradores
+let colaboradores = estadoInicial();
 
 class Colaborador {
   static listarTodos() {
@@ -53,7 +46,6 @@ class Colaborador {
 
   static atualizar(id, dados) {
     const index = colaboradores.findIndex(colab => colab.id === id);
-    
     if (index === -1) return null;
 
     colaboradores[index] = {
@@ -67,7 +59,6 @@ class Colaborador {
 
   static excluir(id) {
     const index = colaboradores.findIndex(colab => colab.id === id);
-    
     if (index === -1) return false;
 
     colaboradores.splice(index, 1);
@@ -75,27 +66,14 @@ class Colaborador {
   }
 
   static buscarPorDepartamento(departamento) {
-    return colaboradores.filter(colab => 
-      colab.departamento.toLowerCase() === departamento.toLowerCase()
+    return colaboradores.filter(
+      colab => colab.departamento.toLowerCase() === departamento.toLowerCase()
     );
   }
 
-  // ⚠️ MÉTODO NOVO PARA TESTES - RESETA O ARRAY
+  // ⚠️ MÉTODO PARA TESTES - RESETA O ARRAY PARA ESTADO INICIAL
   static resetarParaTestes() {
-    colaboradores = [
-      {
-        id: '1',
-        nome: 'João Silva',
-        cargo: 'Desenvolvedor Backend',
-        departamento: 'Tecnologia',
-        email: 'joao.silva@empresa.com',
-        telefone: '(11) 99999-9999',
-        dataAdmissao: '2023-01-15',
-        ativo: true,
-        dataCriacao: new Date().toISOString(),
-        dataAtualizacao: new Date().toISOString()
-      }
-    ];
+    colaboradores = estadoInicial();
   }
 }
 
