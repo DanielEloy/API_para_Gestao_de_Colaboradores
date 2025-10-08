@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 function generateTree(dirPath, prefix = '') {
   const items = fs.readdirSync(dirPath, { withFileTypes: true })
@@ -12,7 +12,6 @@ function generateTree(dirPath, prefix = '') {
     const isLast = index === lastIndex;
     const pointer = isLast ? '└── ' : '├── ';
 
-    // Ícone: 📦 para pasta, 📄 para arquivo
     const icon = item.isDirectory() ? '📦 ' : '📄 ';
 
     tree += `${prefix}${pointer}${icon}${item.name}\n`;
@@ -26,10 +25,6 @@ function generateTree(dirPath, prefix = '') {
   return tree;
 }
 
-// Começa da raiz do projeto
 const tree = `${path.basename(process.cwd())}/\n` + generateTree(process.cwd());
 fs.writeFileSync('arvore_projeto_com_icons.txt', tree);
 console.log('🌳 Árvore com ícones gerada em arvore_projeto_com_icons.txt');
-
-//para gerar a estrutura do projeto automaticamente
-//node src/doc/generate-tree.js

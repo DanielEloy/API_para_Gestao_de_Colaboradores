@@ -1,6 +1,6 @@
 // tests/colaboradores.test.js
 import request from 'supertest';
-import { app } from '../server.js';
+import app from '../server.js';
 import Colaborador from '../src/models/Colaborador.js';
 
 describe('API de Gestão de Colaboradores', () => {

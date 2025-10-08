@@ -4,10 +4,12 @@ gestao-colaboradores-api/
 ├── 📄 .env.production
 ├── 📄 .env.test
 ├── 📄 .gitignore
-├── 📄 .vercelignore
-├── 📄 arvore_projeto.txt
-├── 📄 check-environment.js
+├── 📄 arvore_projeto_com_icons.txt
+├── 📄 babel.config.cjs
 ├── 📦 coverage
+│   ├── 📦 api
+│   │   ├── 📄 index.html
+│   │   └── 📄 index.js.html
 │   ├── 📄 base.css
 │   ├── 📄 block-navigation.js
 │   ├── 📦 config
@@ -16,9 +18,15 @@ gestao-colaboradores-api/
 │   ├── 📦 controllers
 │   │   ├── 📄 colaboradoresController.js.html
 │   │   └── 📄 index.html
+│   ├── 📦 doc
+│   │   ├── 📄 generate-tree.js.html
+│   │   └── 📄 index.html
 │   ├── 📄 favicon.png
 │   ├── 📄 index.html
 │   ├── 📦 lcov-report
+│   │   ├── 📦 api
+│   │   │   ├── 📄 index.html
+│   │   │   └── 📄 index.js.html
 │   │   ├── 📄 base.css
 │   │   ├── 📄 block-navigation.js
 │   │   ├── 📦 config
@@ -26,6 +34,9 @@ gestao-colaboradores-api/
 │   │   │   └── 📄 index.js.html
 │   │   ├── 📦 controllers
 │   │   │   ├── 📄 colaboradoresController.js.html
+│   │   │   └── 📄 index.html
+│   │   ├── 📦 doc
+│   │   │   ├── 📄 generate-tree.js.html
 │   │   │   └── 📄 index.html
 │   │   ├── 📄 favicon.png
 │   │   ├── 📄 index.html
@@ -60,13 +71,12 @@ gestao-colaboradores-api/
 │   │   └── 📄 index.html
 │   ├── 📄 sort-arrow-sprite.png
 │   └── 📄 sorter.js
-├── 📄 jest.config.js
+├── 📄 jest.config.cjs
 ├── 📄 package-lock.json
 ├── 📄 package.json
 ├── 📄 server.js
-├── 📄 setup-env.js
 ├── 📦 src
-│   ├── 📦 config
+│   ├── 📦 api
 │   │   └── 📄 index.js
 │   ├── 📦 controllers
 │   │   └── 📄 colaboradoresController.js
@@ -80,18 +90,10 @@ gestao-colaboradores-api/
 │   │   └── 📄 Colaborador.js
 │   ├── 📦 routes
 │   │   └── 📄 colaboradores.js
-│   ├── 📄 src__projeto.txt
 │   └── 📦 utils
 │       └── 📄 logger.js
 ├── 📦 tests
-│   ├── 📄 api.test.js
-│   ├── 📄 basic.test.js
 │   ├── 📄 colaboradores.test.js
-│   ├── 📄 debug-api.js
-│   ├── 📄 model.test.js
-│   ├── 📄 setup.test.js
-│   ├── 📄 simple-api.test.js
-│   ├── 📄 test-api.js
-│   ├── 📄 test-vercel.js
-│   └── 📄 test_projeto.txt
+│   ├── 📄 debug.test.js
+│   └── 📄 setup.test.js
 └── 📄 vercel.json
